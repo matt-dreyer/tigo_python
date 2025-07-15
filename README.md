@@ -20,12 +20,12 @@ pip install tigo_python
 
 ### From GitHub
 ```bash
-pip install git+https://github.com/matt-dreyer/tigo-python.git
+pip install git+https://github.com/matt-dreyer/tigo_python.git
 ```
 
 ### Development Installation
 ```bash
-git clone https://github.com/matt-dreyer/tigo-python.git
+git clone https://github.com/matt-dreyer/tigo_python.git
 cd tigo-python
 pip install -e ".[dev]"
 ```
@@ -125,7 +125,7 @@ The library automatically handles API rate limits by:
 
 ### Setup
 ```bash
-git clone https://github.com/mattdreyer/tigo-python.git
+git clone https://github.com/matt-dreyer/tigo_python.git
 cd tigo-python
 pip install -e ".[dev]"
 ```
