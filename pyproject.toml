@@ -1,42 +1,99 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
-name = "tigo_python"
+name = "tigo-python"
 version = "0.1.0"
-description = "Python client for the Tigo Energy API"
-authors = [{ name = "Matt Dreyer", email = "matt_dreyer@hotmail.com" }]
-license = "MIT"
+description = "A modern Python library for interacting with the Tigo Energy API"
 readme = "README.md"
 requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Matt Dreyer", email = "matt_dreyer@hotmail.com"}
+]
+keywords = ["tigo", "energy", "solar", "api", "monitoring"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Monitoring",
+    "Topic :: Scientific/Engineering",
+]
+
 dependencies = [
     "httpx>=0.27.0",
     "pandas>=2.0.0",
     "numpy>=1.24.0",
-    "pytz>=2023.3",
-    "python-dateutil>=2.8.2",
+    "python-dotenv>=0.19.0",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4.0", 
-    "pytest-cov>=4.1.0",
-    "mypy>=1.5.0", 
-    "ruff>=0.1.0", 
-    "httpx[http2]",
-    "python-dotenv>=1.0.0"
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "black>=22.0.0",
+    "pre-commit>=2.20.0",
 ]
 
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+[project.urls]
+Homepage = "https://github.com/matt-dreyer/tigo_python"
+Documentation = "https://github.com/matt-dreyer/tigo_python"
+Repository = "https://github.com/matt-dreyer/tigo_python"
+"Bug Tracker" = "https://github.com/matt-dreyer/tigo_python/issues"
 
-[tool.hatch.metadata]
-allow-direct-references = true
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tigo_python*"]
+exclude = ["tests*"]
 
 [tool.ruff]
-line-length = 88
 target-version = "py38"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "B",   # bugbear
+    "I",   # isort
+    "UP",  # pyupgrade
+    "N",   # pep8-naming
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # Allow assert statements in tests
 
 [tool.mypy]
 python_version = "3.8"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "--cov=tigo_python --cov-report=html --cov-report=term-missing"
+
+[tool.coverage.run]
+source = ["tigo_python"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.",
+]

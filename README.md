@@ -1,10 +1,10 @@
 # Tigo Python API Wrapper
 
-A modern, open-source Python library for interacting with the [Tigo Energy API](https://support.tigoenergy.com/hc/en-us/article_attachments/360041622173). Built with `httpx`, tested with `pytest`, and designed for easy integration and extension.
+A modern, open-source Python library for interacting with the [Tigo Energy API](https://support.tigoenergy.com/hc/en-us/article_attachments/360041622173). 
 
 ## Features
 
-- 🔑 **Automatic authentication** with credentials from environment or direct parameters
+- 🔑 **Automatic authentication** with credentials from environment 
 - 📊 **Raw API access** and convenient DataFrame helpers  
 - ⚡ **Built-in rate limiting** and error handling
 - 🧪 **Well-tested** with comprehensive test suite
@@ -15,17 +15,17 @@ A modern, open-source Python library for interacting with the [Tigo Energy API](
 
 ### From PyPI (when published)
 ```bash
-pip install tigo-python
+pip install tigo_python
 ```
 
 ### From GitHub
 ```bash
-pip install git+https://github.com/mattdreyer/tigo-python.git
+pip install git+https://github.com/matt-dreyer/tigo-python.git
 ```
 
 ### Development Installation
 ```bash
-git clone https://github.com/mattdreyer/tigo-python.git
+git clone https://github.com/matt-dreyer/tigo-python.git
 cd tigo-python
 pip install -e ".[dev]"
 ```
