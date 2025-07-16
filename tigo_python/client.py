@@ -18,7 +18,6 @@ from .exceptions import TigoAPIError
 load_dotenv()
 
 
-
 class TigoClient:
     """
     Clean API wrapper for Tigo Energy platform.
@@ -42,8 +41,6 @@ class TigoClient:
     # Panel Analysis
     MAX_PANELS_TO_ANALYZE = 10
     PANEL_VARIATION_RANGE = (0.85, 1.15)  # 85% to 115% variation
-
-
 
     def __init__(self, username: Optional[str] = None, password: Optional[str] = None):
         """
@@ -72,7 +69,6 @@ class TigoClient:
             headers=self.authenticator.get_headers(),
             timeout=self.DEFAULT_TIMEOUT 
         )
-        
 
     def __enter__(self):
         return self
@@ -98,7 +94,6 @@ class TigoClient:
         except Exception as e:
             self.logger.error(f"Unexpected error in {func.__name__}: {e}")
             raise TigoAPIError(None, f"Unexpected error: {e}")
-
 
     def get(self, endpoint: str, **kwargs) -> Dict[str, Any]:
         """Make GET request and return JSON."""
@@ -167,17 +162,6 @@ class TigoClient:
     def get_summary(self, system_id: int) -> Dict[str, Any]:
         """Get system summary data."""
         return self.get("/data/summary", params={"system_id": system_id})
-
-    # Keep backward compatibility with deprecated methods
-    def get_aggregate_data_raw(self, *args, **kwargs) -> str:
-        """Deprecated: Use get_aggregate_data(return_dataframe=False) instead."""
-        self.logger.warning("get_aggregate_data_raw is deprecated, use get_aggregate_data(return_dataframe=False)")
-        return self.get_aggregate_data(*args, return_dataframe=False, **kwargs)
-
-    def get_combined_data_raw(self, *args, **kwargs) -> str:
-        """Deprecated: Use get_combined_data(return_dataframe=False) instead."""
-        self.logger.warning("get_combined_data_raw is deprecated, use get_combined_data(return_dataframe=False)")
-        return self.get_combined_data(*args, return_dataframe=False, **kwargs)    
 
     # Alert endpoints
     def get_alerts(
@@ -279,6 +263,16 @@ class TigoClient:
         csv_data = self.get_raw("/data/combined", params=params)
         return self.csv_to_dataframe(csv_data) if return_dataframe else csv_data
 
+    # Keep backward compatibility with deprecated methods
+    def get_aggregate_data_raw(self, *args, **kwargs) -> str:
+        """Deprecated: Use get_aggregate_data(return_dataframe=False) instead."""
+        self.logger.warning("get_aggregate_data_raw is deprecated, use get_aggregate_data(return_dataframe=False)")
+        return self.get_aggregate_data(*args, return_dataframe=False, **kwargs)
+
+    def get_combined_data_raw(self, *args, **kwargs) -> str:
+        """Deprecated: Use get_combined_data(return_dataframe=False) instead."""
+        self.logger.warning("get_combined_data_raw is deprecated, use get_combined_data(return_dataframe=False)")
+        return self.get_combined_data(*args, return_dataframe=False, **kwargs)
 
     # --------------------
     # Enhanced Analysis Methods
@@ -308,7 +302,7 @@ class TigoClient:
             start, end = self.get_safe_date_range(days_back, level)
             return self.get_combined_data(system_id, start, end, level=level)
         except Exception as e:
-            self.logger.warning(f"Could not get today's data: {e}")
+            self.logger.warning(f"Could not get date range data: {e}")
             return pd.DataFrame()
 
     def calculate_system_efficiency(
@@ -624,7 +618,6 @@ class TigoClient:
             tuple: (start_iso, end_iso) strings
         """
         end = datetime.now()
-        
         
         if level == "minute":
             # For minute-level data, enforce the strict limit
