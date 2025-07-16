@@ -95,6 +95,26 @@ class TigoClient:
             self.logger.error(f"Unexpected error in {func.__name__}: {e}")
             raise TigoAPIError(None, f"Unexpected error: {e}")
 
+
+    def _ensure_client_open(self):
+        """Ensure the HTTP client is open, recreate if needed."""
+        if not hasattr(self, 'client') or self.client.is_closed:
+            self.client = httpx.Client(
+                base_url=self.BASE_URL, 
+                headers=self.authenticator.get_headers(),
+                timeout=self.DEFAULT_TIMEOUT 
+            )
+
+    def _make_request(self, method: str, endpoint: str, **kwargs) -> httpx.Response:
+        """Make HTTP request with error handling."""
+        self._ensure_client_open()  # Ensure client is open before each request
+        response = getattr(self.client, method.lower())(endpoint, **kwargs)
+        
+        if response.status_code != 200:
+            raise TigoAPIError(response)
+        return response
+
+
     def get(self, endpoint: str, **kwargs) -> Dict[str, Any]:
         """Make GET request and return JSON."""
         response = self._make_request('GET', endpoint, **kwargs)
