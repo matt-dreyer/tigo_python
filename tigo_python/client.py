@@ -74,15 +74,9 @@ class TigoClient:
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.close()
-
-    def _make_request(self, method: str, endpoint: str, **kwargs) -> httpx.Response:
-        """Make HTTP request with error handling."""
-        response = getattr(self.client, method.lower())(endpoint, **kwargs)
-        
-        if response.status_code != 200:
-            raise TigoAPIError(response)
-        return response
+        # FIXED: Don't automatically close the client on context exit
+        # This allows the client to be reused across multiple API calls
+        pass
 
     def _safe_api_call(self, func, *args, **kwargs):
         """Wrapper for consistent error handling."""
@@ -95,10 +89,10 @@ class TigoClient:
             self.logger.error(f"Unexpected error in {func.__name__}: {e}")
             raise TigoAPIError(None, f"Unexpected error: {e}")
 
-
     def _ensure_client_open(self):
         """Ensure the HTTP client is open, recreate if needed."""
         if not hasattr(self, 'client') or self.client.is_closed:
+            self.logger.info("Recreating closed HTTP client")
             self.client = httpx.Client(
                 base_url=self.BASE_URL, 
                 headers=self.authenticator.get_headers(),
@@ -113,7 +107,6 @@ class TigoClient:
         if response.status_code != 200:
             raise TigoAPIError(response)
         return response
-
 
     def get(self, endpoint: str, **kwargs) -> Dict[str, Any]:
         """Make GET request and return JSON."""
@@ -132,8 +125,9 @@ class TigoClient:
 
     def close(self):
         """Close the HTTP client."""
-        if hasattr(self, 'client'):
+        if hasattr(self, 'client') and not self.client.is_closed:
             self.client.close()
+            self.logger.info("HTTP client closed")
 
     # --------------------
     # Core API Methods - Direct API Mappings
